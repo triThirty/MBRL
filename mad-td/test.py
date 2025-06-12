@@ -1,3 +1,4 @@
+import time
 import gymnasium as gym
 import torch
 import torch.nn as nn
@@ -5,6 +6,9 @@ import torch.optim as optim
 import random
 from collections import deque
 import numpy as np
+
+from torch.utils.tensorboard import SummaryWriter
+
 
 SEED = 42
 random.seed(SEED)
@@ -25,6 +29,10 @@ LR_ACTOR = 1e-3
 LR_CRITIC = 1e-3
 LR_MODEL = 1e-3
 DEVICE = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+
+
+# --- Util Set Up ---
+writer = SummaryWriter(log_dir=f"runs/{ENV_NAME}_{SEED}_{time.strftime('%m%d-%H%M%S')}")
 
 # --- Replay Buffer ---
 replay = deque(maxlen=200000)
@@ -168,6 +176,8 @@ for ep in range(MAX_EPISODES):
         if done or trunc:
             break
 
+    writer.add_scalar("Episode/Return", ep_ret, ep)
     print(ep, "Return:", ep_ret)
 
 env.close()
+writer.close()
