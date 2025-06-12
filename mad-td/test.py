@@ -6,6 +6,12 @@ import random
 from collections import deque
 import numpy as np
 
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+torch.cuda.manual_seed_all(SEED)
+
 # --- Hyperparameters ---
 ENV_NAME = "Walker2d-v4"
 BATCH_SIZE = 256
@@ -18,7 +24,7 @@ MAX_STEPS = 50
 LR_ACTOR = 1e-3
 LR_CRITIC = 1e-3
 LR_MODEL = 1e-3
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DEVICE = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 # --- Replay Buffer ---
 replay = deque(maxlen=200000)
